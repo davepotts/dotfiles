@@ -6,3 +6,5 @@ _comp_options+=(globdots)
 
 export VISUAL=nvim
 export EDITOR="$VISUAL"
+
+Development="/mnt/c/Users/davep/Development"

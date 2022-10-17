@@ -84,11 +84,6 @@ _G.packer_plugins = {
     path = "/home/dave/.local/share/nvim/site/pack/packer/start/markdown-preview.nvim",
     url = "https://github.com/iamcco/markdown-preview.nvim"
   },
-  ["material.nvim"] = {
-    loaded = true,
-    path = "/home/dave/.local/share/nvim/site/pack/packer/start/material.nvim",
-    url = "https://github.com/marko-cerovac/material.nvim"
-  },
   ["null-ls.nvim"] = {
     loaded = true,
     path = "/home/dave/.local/share/nvim/site/pack/packer/start/null-ls.nvim",
@@ -119,6 +114,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/dave/.local/share/nvim/site/pack/packer/start/plenary.nvim",
     url = "https://github.com/nvim-lua/plenary.nvim"
+  },
+  ["prettier.nvim"] = {
+    loaded = true,
+    path = "/home/dave/.local/share/nvim/site/pack/packer/start/prettier.nvim",
+    url = "https://github.com/MunifTanjim/prettier.nvim"
   },
   ["telescope.nvim"] = {
     loaded = true,

@@ -11,7 +11,6 @@ packer.startup(function(use)
 	use("nvim-lua/plenary.nvim")
 	use({ "nvim-telescope/telescope.nvim", tag = "0.1.0", requires = { { "nvim-lua/plenary.nvim" } } })
 	use({ "nvim-lualine/lualine.nvim", requires = { "kyazdani42/nvim-web-devicons", opt = true } })
-	use("marko-cerovac/material.nvim")
 	use({
 		"iamcco/markdown-preview.nvim",
 		run = function()
@@ -20,6 +19,7 @@ packer.startup(function(use)
 	})
 	use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
 	use({ "jose-elias-alvarez/null-ls.nvim" })
+  use "MunifTanjim/prettier.nvim" 
   use "folke/tokyonight.nvim"
 	use("neovim/nvim-lspconfig")
 end)
