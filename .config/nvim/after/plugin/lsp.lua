@@ -5,6 +5,15 @@ local lsp = require('lsp-zero').preset({
 	suggest_lsp_servers = true,
 })
 
+lsp.set_server_config({
+	capabilities = {
+		textDocument = {
+			foldingRange = {
+				dynamicRegistration = true }
+		}
+	}
+})
+
 lsp.format_on_save({
 	format_opts = {
 		timeout_ms = 10000 },
@@ -24,4 +33,20 @@ vim.diagnostic.config({
 	underline = true,
 	severity_sort = false,
 	float = true,
+})
+
+local function on_language_status(_, result)
+	if result.message == nil then
+		return
+	end
+	local command = vim.api.nvim_command
+	command 'echohl ModeMsg'
+	command(string.format('echo "%s"', result.message))
+	command 'echohl None'
+end
+
+require("lspconfig").jdtls.setup({
+	handlers = {
+		["$/progress"] = vim.schedule_wrap(on_language_status),
+	},
 })

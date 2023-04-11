@@ -20,7 +20,7 @@ local plugins = {
 		dependencies = { 'nvim-lua/plenary.nvim' }
 	},
 	'nvim-lualine/lualine.nvim',
-	'folke/tokyonight.nvim',
+	'Mofiqul/dracula.nvim',
 	{
 		'VonHeikemen/lsp-zero.nvim',
 		branch = 'v1.x',
@@ -38,8 +38,15 @@ local plugins = {
 			{ 'rafamadriz/friendly-snippets' },
 		},
 	},
-	'mfussenegger/nvim-jdtls'
-
+	'mfussenegger/nvim-jdtls',
+	{
+		"mfussenegger/nvim-dap",
+		dependencies = {
+			"rcarriga/nvim-dap-ui",
+			"rcarriga/cmp-dap"
+		}
+	},
+	'norcalli/nvim-colorizer.lua',
 }
 
 require("lazy").setup(plugins)
