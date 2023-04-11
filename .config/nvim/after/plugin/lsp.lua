@@ -45,6 +45,17 @@ local function on_language_status(_, result)
 	command 'echohl None'
 end
 
+require("lspconfig").lua_ls.setup({
+	settings = {
+		Lua = {
+			diagnostics = {
+				disable = { "lowercase-global" },
+				globals = { "vim" }
+			}
+		}
+	}
+})
+
 require("lspconfig").jdtls.setup({
 	handlers = {
 		["$/progress"] = vim.schedule_wrap(on_language_status),
