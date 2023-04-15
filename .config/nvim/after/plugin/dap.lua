@@ -1,12 +1,12 @@
 local dap, dapui = require("dap"), require("dapui")
 local cmp = require('cmp')
 local ts_utils = require("nvim-treesitter").ts_utils
-remap = require("davepotts.utils").remap
+local remap = require("davepotts.utils").remap
 
 cmp.setup({
 	enabled = function()
 		return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt"
-				or require("cmp_dap").is_dap_buffer()
+			or require("cmp_dap").is_dap_buffer()
 	end
 })
 
@@ -28,6 +28,7 @@ dap.listeners.before.event_exited["dapui_config"] = function()
 	dapui.close()
 end
 
+require("nvim-dap-virtual-text").setup()
 
 local function find_node_by_type(expr, type_name)
 	while expr do
@@ -140,16 +141,45 @@ function run_spring_boot(profile, debug)
 	vim.cmd('term ' .. get_spring_boot_runner(profile, debug))
 end
 
+dap.configurations.java = {
+	{
+		type = 'java',
+		request = 'attach',
+		name = "Attach to the process",
+		hostName = 'localhost',
+		port = '5005',
+	},
+}
+
+dap.adapters.firefox = {
+	type = "executable",
+	command = "node",
+	args = { "/opt/vscode-firefox-debug/dist/adapter.bundle.js" }
+}
+
+dap.configurations.typescript = {
+	{
+		name = "Attach Firefox",
+		type = "firefox",
+		request = "attach",
+		reAttach = true,
+		url = "http://localhost:4600",
+		webRoot = "${workspaceFolder}",
+		firefoxExecutable = '/usr/bin/firefox',
+		firefoxArgs = {"-P 'default'"}
+	},{
+		name = "Debug with Firefox",
+		type = "firefox",
+		request = "launch",
+		reAttach = true,
+		url = "http://localhost:4600",
+		webRoot = "${workspaceFolder}",
+		firefoxExecutable = '/usr/bin/firefox',
+		firefoxArgs = {"--no-remote -P 'debug_profile'"},
+		tmpDir = "/mnt/c/Users/Dave.Potts/"
+	} }
+
 function attach_to_debug()
-	dap.configurations.java = {
-		{
-			type = 'java',
-			request = 'attach',
-			name = "Attach to the process",
-			hostName = 'localhost',
-			port = '5005',
-		},
-	}
 	continue()
 end
 
@@ -190,10 +220,10 @@ function open_repl()
 	dap.repl.open()
 end
 
-remap("n", "<F9>", ":lua run_spring_boot(nil, false)<CR>")
-remap("n", "<F10>", ":lua run_spring_boot(nil, true)<CR>")
-remap('n', '<F5>', ':lua continue()<CR>')
-remap('n', '<F8>', ':lua step_over()<CR>')
+--remap("n", "<leader>r", ":lua run_spring_boot('local', false)<CR>")
+--remap("n", "<leader>d", ":lua run_spring_boot('local', true)<CR>")
+remap('n', '<leader>dc', ':lua continue()<CR>')
+remap('n', '<leader>do', ':lua step_over()<CR>')
 remap('n', '<F7>', ':lua step_into()<CR>')
 remap('n', '<S-F8>', ':lua step_out()<CR>')
 
@@ -205,7 +235,4 @@ remap("n", "<leader>TC", ":lua run_java_test_class(true)")
 remap('n', '<leader>b', ':lua toggle_breakpoint()<CR>')
 remap('n', '<leader>B', ':lua set_breakpoint(vim.fn.input("Condition: "))<CR>')
 remap('n', '<leader>bl', ':lua set_breakpoint(nil, nil, vim.fn.input("Log: "))<CR>')
-remap('n', '<leader>dr', ':lua open_repl()<CR>')
-
 remap('n', 'gs', ':lua show_dap_centered_scopes()<CR>')
-remap('n', '<leader>da', ':lua attach_to_debug()<CR>')

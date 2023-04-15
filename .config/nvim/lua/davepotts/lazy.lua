@@ -20,7 +20,7 @@ local plugins = {
 		dependencies = { 'nvim-lua/plenary.nvim' }
 	},
 	'nvim-lualine/lualine.nvim',
-	'Mofiqul/dracula.nvim',
+	"ray-x/starry.nvim",
 	{
 		'VonHeikemen/lsp-zero.nvim',
 		branch = 'v1.x',
@@ -43,10 +43,26 @@ local plugins = {
 		"mfussenegger/nvim-dap",
 		dependencies = {
 			"rcarriga/nvim-dap-ui",
-			"rcarriga/cmp-dap"
+			"rcarriga/cmp-dap",
+			"theHamsta/nvim-dap-virtual-text"
 		}
 	},
 	'norcalli/nvim-colorizer.lua',
+	{
+		"okuuva/auto-save.nvim",
+		init = function()
+			require("auto-save").setup({
+				debounce_delay = 5000,
+			})
+		end
+	},
+	{
+		"iamcco/markdown-preview.nvim",
+		ft = "markdown",
+		run = function()
+			vim.fn["mkdp#util#install"]()
+		end,
+	},
 }
 
 require("lazy").setup(plugins)

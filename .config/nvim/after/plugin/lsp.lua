@@ -17,14 +17,18 @@ lsp.set_server_config({
 lsp.format_on_save({
 	format_opts = {
 		timeout_ms = 10000 },
-	servers = {
-		['jdtls'] = { 'java' },
-		['typescript-language-server'] = { 'typescript' },
-		['lua_ls'] = { 'lua' },
-	}
 })
+
+
 lsp.nvim_workspace()
+lsp.on_attach(function()
+	lsp.buffer_autoformat()
+end)
+
+
+lsp.skip_server_setup({ "jdtls" })
 lsp.setup()
+
 
 vim.diagnostic.config({
 	virtual_text = true,
@@ -34,16 +38,6 @@ vim.diagnostic.config({
 	severity_sort = false,
 	float = true,
 })
-
-local function on_language_status(_, result)
-	if result.message == nil then
-		return
-	end
-	local command = vim.api.nvim_command
-	command 'echohl ModeMsg'
-	command(string.format('echo "%s"', result.message))
-	command 'echohl None'
-end
 
 require("lspconfig").lua_ls.setup({
 	settings = {
@@ -56,8 +50,15 @@ require("lspconfig").lua_ls.setup({
 	}
 })
 
-require("lspconfig").jdtls.setup({
-	handlers = {
-		["$/progress"] = vim.schedule_wrap(on_language_status),
-	},
-})
+
+local remap = require("davepotts.utils").remap
+remap('n', "<leader><leader>", '<CMD>lua vim.lsp.buf.code_action()<CR>')
+remap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>')
+remap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>')
+remap('n', 'gr', '<cmd>lua vim.lsp.buf.references() && vim.cmd("copen")<CR>')
+remap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
+remap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
+remap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
+remap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
+remap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
+remap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')

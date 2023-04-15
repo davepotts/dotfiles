@@ -5,43 +5,41 @@ if not jdtls_ok then
 end
 
 
-function find_root()
-	local markers = { "mvnw", "pom.xml" }
-	local bufname = vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
-	local dirname = vim.fn.fnamemodify(bufname, ":p:h")
-	local root = vim.fn.getcwd()
-	local match = nil
-	local getparent = function(p)
-		return vim.fn.fnamemodify(p, ':h')
-	end
-	while getparent(dirname) ~= dirname or dirname == root do
-		for _, marker in ipairs(markers) do
-			if vim.loop.fs_stat(require("jdtls.path").join(dirname, marker)) then
-				match = dirname
-			end
-		end
-		dirname = getparent(dirname)
-	end
-	return match
+function find_parent_root(markers, bufname)
+  bufname = bufname or vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
+  local current_dir = vim.fn.fnamemodify(bufname, ':p:h')
+	local root_dir
+  local getparent = function(_dirname)
+
+    return vim.fn.fnamemodify(_dirname, ':h')
+  end
+  while getparent(current_dir) ~= "/" do
+    for _, marker in ipairs(markers) do
+      if vim.loop.fs_stat(require("jdtls.path").join(current_dir, marker)) then
+        root_dir = current_dir
+      end
+    end
+    current_dir = getparent(current_dir)
+  end
+	return root_dir
 end
 
-local root_dir = find_root()
+local root_dir = find_parent_root({ ".git", "pom.xml", "mvnw" })
 
 if root_dir == "" or root_dir == nil then
 	return
 end
 
 local jdtls_path = vim.fn.stdpath('data') .. "/mason/packages/jdtls/"
-local java_debug_path =
-"/opt/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-0.44.0.jar"
+local java_debug_path = "/opt/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-0.44.0.jar"
 local path_to_lsp_server = jdtls_path .. "config_linux"
 local path_to_plugins = jdtls_path .. "plugins/"
-local path_to_jar = path_to_plugins .. "org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"
+local path_to_jar = path_to_plugins .. "org.eclipse.equinox.launcher_1.6.500.v20230622-2056.jar"
 local lombok_path = jdtls_path .. "lombok.jar"
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
 local workspace_dir = vim.fn.stdpath('data') .. '/site/java/workspace-root/' .. project_name
 
-os.execute("mkdir " .. workspace_dir)
+os.execute("mkdir -p " .. workspace_dir)
 
 local on_attach = function(client, bufnr)
 	require 'jdtls.setup'.add_commands()
@@ -103,7 +101,6 @@ local config = {
 	cmd = {
 		'/usr/lib/jvm/java-17-openjdk-amd64/bin/java',
 		'-agentlib:' .. 'jdwp=transport=dt_socket,server=y,suspend=n,address=1044',
-		'-javaagent:' .. lombok_path,
 		'-Declipse.application=org.eclipse.jdt.ls.core.id1',
 		'-Dosgi.bundles.defaultStartLevel=4',
 		'-Declipse.product=org.eclipse.jdt.ls.core.product',
@@ -111,12 +108,13 @@ local config = {
 		'-Dlog.level=ALL',
 		"-Xms1g",
 		"-Xmx2G",
-		'-jar', path_to_jar,
-		'-configuration', path_to_lsp_server,
-		'-data', workspace_dir,
+		'-javaagent:' .. lombok_path,
 		'--add-modules=ALL-SYSTEM',
 		'--add-opens', 'java.base/java.util=ALL-UNNAMED',
 		'--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+		'-jar', path_to_jar,
+		'-configuration', path_to_lsp_server,
+		'-data', workspace_dir,
 	},
 	root_dir = root_dir,
 	flags = { allow_incremental_sync = true },
@@ -139,11 +137,16 @@ local config = {
 					}
 				}
 			},
-			maven = { downloadSources = true },
+			maven = { downloadSources = true, updateSnapshots = true },
 			implementationsCodeLens = { enabled = true },
 			referencesCodeLens = { enabled = true },
 			references = { includeDecompiledSources = true },
-			format = { enabled = true },
+			format = {
+				settings = {
+					url = "/home/dave/dotfiles/Lhasa.xml"
+				},
+				enabled = true
+			},
 			signatureHelp = { enabled = true },
 			import = {
 				maven = { enabled = true },
@@ -220,3 +223,20 @@ require('jdtls.ui').pick_one_async = function(items, prompt, label_fn, cb)
 end
 
 require('jdtls').start_or_attach(config)
+
+local remap = require("davepotts.utils").remap
+remap("n", "<leader>dc", "<Cmd>lua require'jdtls'.test_class()<CR>")
+remap("n", "<leader>dm", "<Cmd>lua require'jdtls'.test_nearest_rmethod()<CR>")
+remap("v", "<leader>cv", "<Esc><Cmd>lua require('jdtls').extract_variable(true)<CR>")
+remap("n", "<leader>cv", "<Cmd>lua require('jdtls').extract_variable()<CR>")
+remap("v", "<leader>cm", "<Esc><Cmd>lua require('jdtls').extract_method(true)<CR>")
+
+local java_format_on_save = vim.api.nvim_create_augroup("java_format_on_save", { clear = true })
+vim.api.nvim_create_autocmd("BufWritePre", {
+	group = java_format_on_save,
+	buffer = 0,
+	callback = function()
+		vim.lsp.buf.format()
+		require("jdtls").organize_imports()
+	end
+})
