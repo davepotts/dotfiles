@@ -3,19 +3,10 @@ starship init fish | source
 #export DISPLAY=(ip route list default | awk '{print $3}'):0
 #export LIBGL_ALWAYS_INDIRECT=1
 export KAPTIS="$HOME/development/kaptis"
-set DOCKER_NOT_RUNNING (ps aux | grep dockerd | grep -v grep)
-if test -z "$DOCKER_NOT_RUNNING"
-	sudo dockerd > /dev/null 2>&1 & disown
-end
-
-# Load SSH KEYS
-if not set -q SSH_AUTH_SOCK
-    eval (ssh-agent -c) > /dev/null
-		if not ssh-add -l | grep -q "github_lhasa"
-				ssh-add ~/.ssh/github_lhasa > /dev/null
-		end
-end
-
+#set DOCKER_NOT_RUNNING (ps aux | grep dockerd | grep -v grep)
+#if test -z "$DOCKER_NOT_RUNNING"
+#	sudo dockerd > /dev/null 2>&1 & disown
+#end
 
 alias ls="exa"
 alias gs="git status"
@@ -50,4 +41,13 @@ function sys-down
     cd $KAPTIS/compose/dev
     docker compose down
     cd $DIR
+end
+
+function github 
+		if not set -q SSH_AUTH_SOCK
+				eval (ssh-agent -c) > /dev/null
+				if not ssh-add -l | grep -q "github_lhasa"
+						ssh-add ~/.ssh/github_lhasa > /dev/null
+				end
+		end
 end
