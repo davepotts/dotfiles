@@ -1,7 +1,12 @@
 lastupdatecheck: 0
 recentrepos:
 - /home/dave/development/kaptis
+- /home/dave/development/kaptis-cdk
+- /home/dave/development/ceng
+- /home/dave/development/luigi
+- /home/dave/development/keycloak
 startuppopupversion: 5
-customcommandshistory: []
+customcommandshistory:
+- q
 hidecommandlog: false
 ignorewhitespaceindiffview: false
