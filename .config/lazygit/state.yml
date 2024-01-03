@@ -1,7 +1,8 @@
 lastupdatecheck: 0
 recentrepos:
-- /home/dave/development/kaptis
+- /home/dave/dotfiles
 startuppopupversion: 5
-customcommandshistory: []
+customcommandshistory:
+- q
 hidecommandlog: false
 ignorewhitespaceindiffview: false
