@@ -3,7 +3,12 @@ starship init fish | source
 #export DISPLAY=(ip route list default | awk '{print $3}'):0
 #export LIBGL_ALWAYS_INDIRECT=1
 export KAPTIS="$HOME/development/kaptis"
-export AWS_PROFILE="KaptisDev"
+if set (uname -n) == 'XPS17']
+    export AWS_PROFILE="Screach"
+else
+    export AWS_PROFILE="KaptisDev"
+end
+
 #set DOCKER_NOT_RUNNING (ps aux | grep dockerd | grep -v grep)
 #if test -z "$DOCKER_NOT_RUNNING"
 #	sudo dockerd > /dev/null 2>&1 & disown
@@ -17,7 +22,7 @@ alias weather="curl wttr.in/south%20shields"
 alias notes="cd /mnt/c/Users/Dave.Potts/OneDrive/Notes; nvim ."
 alias know-be="cd $KAPTIS/aop-knowledge-backend; mvn spring-boot:run -Dspring-boot.run.profiles=local"
 alias kap-fe="cd $KAPTIS/frontend; npm run start"
-alias kap-e2e="cd $KAPTIS; mvn clean test -pl :e2e-test -am -fae -DexcludedGroups=AopWiki,Ichs1,FrontendServices -Dskip.api.tests=true -Dskip.backend.tests=true"
+alias kap-e2e="cd $KAPTIS; mvn clean test -pl :e2e-test -am -fae -Dgroups=AopKbEditor -Dskip.api.tests=true -Dskip.backend.tests=true"
 alias asmt-be="cd $KAPTIS/assessment-backend; mvn spring-boot:run -Dspring-boot.run.profiles=local"
 alias s1-fe="cd $KAPTIS/frontend; npm run start:ichs1"
 alias s1-e2e="cd $KAPTIS; mvn clean test -pl :e2e-test -am -fae -Dgroups=Ichs1"
@@ -30,6 +35,8 @@ alias kc-rebuild="cd ~/development/keycloak/test-harness/docker; docker compose 
 alias nvimrc="nvim $HOME/.config/nvim"
 alias fishrc="nvim $HOME/.config/fish/config.fish"
 alias tmuxrc="nvim $HOME/.config/tmux/tmux.conf"
+alias nvim_build="cd /opt/neovim; make CMAKE_BUILD_TYPE=RelWithDebInfo; sudo make install"
+alias screachca="aws codeartifact login --tool npm --repository screach-npm --domain screach --domain-owner 861532443756 --region eu-west-1"
 
 function sys-up
     set DIR (pwd)
