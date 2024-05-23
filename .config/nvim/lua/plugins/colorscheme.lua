@@ -1,10 +1,5 @@
 return {
-  {
-    "norcalli/nvim-colorizer.lua",
-    config = function()
-      require("colorizer").setup()
-    end,
-  },
-  { "dracula/vim" },
+  { "Mofiqul/dracula.nvim" },
+  --{ "LazyVim/LazyVim", opts = { colorscheme = "catppuccin", style = "Macchiato" } },
   { "LazyVim/LazyVim", opts = { colorscheme = "dracula" } },
 }

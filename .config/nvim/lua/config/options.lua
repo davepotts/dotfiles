@@ -2,3 +2,10 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 vim.g.mapleader = ","
+vim.g.minipairs_disable = true
+vim.g.autoformat = false
+vim.opt.shiftwidth = 4
+vim.opt.tabstop = 4
+vim.opt.expandtab = false
+vim.opt.list = true
+vim.opt.listchars = { tab = "▸ ", trail = "·", nbsp = "·", eol = "¬" }

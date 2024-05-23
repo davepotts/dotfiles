@@ -1,13 +1,17 @@
 lastupdatecheck: 0
 recentrepos:
-- /home/dave/dotfiles
-- /home/dave/development/kaptis
-- /home/dave/development/kaptis-cdk
-- /home/dave/development/ceng
 - /home/dave/development/luigi
+- /home/dave/development/kaptis
+- /home/dave/development/kaptis/build-system
+- /home/dave/development/kaptis-cdk
+- /home/dave/development/kaptis/ops/cdk/kaptis
+- /home/dave/development/platforms/liquibase-demo
+- /home/dave/dotfiles
+- /home/dave/development/ceng
 - /home/dave/development/keycloak
 startuppopupversion: 5
 customcommandshistory:
+- w
 - q
 hidecommandlog: false
 ignorewhitespaceindiffview: false
