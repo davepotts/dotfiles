@@ -9,3 +9,4 @@ vim.opt.tabstop = 4
 vim.opt.expandtab = false
 vim.opt.list = true
 vim.opt.listchars = { tab = "▸ ", trail = "·", nbsp = "·", eol = "¬" }
+vim.g.snacks_animate = false
